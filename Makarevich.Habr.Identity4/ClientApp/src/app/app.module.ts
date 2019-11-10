@@ -9,17 +9,28 @@ import { ApiAuthorizationModule } from './api-authorization/api-authorization.mo
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ExchangeRateComponent } from './exchange-rate/exchange-rate.component';
 import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor';
+import { LoginAccountComponent } from './account/components/account/login/login-account.component';
+import { ForbiddenComponent } from './account/components/forbidden/forbidden.component';
+import { UnauthorizedComponent } from './account/components/unauthorized/unauthorized.component';
+import { InputComponent } from './account/shared/input/input.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     DataComponent,
-    ExchangeRateComponent
+    ExchangeRateComponent,
+    LoginAccountComponent,
+    ForbiddenComponent,
+    UnauthorizedComponent,
+    InputComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule,
     AppRoutingModule,
     ApiAuthorizationModule
   ],

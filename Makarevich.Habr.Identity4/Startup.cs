@@ -19,17 +19,34 @@ namespace Makarevich.Habr.Identity4 {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+            services.AddCors(options => {
+                options.AddPolicy("AllowAllOrigins",
+                    b => {
+                        b.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddRazorPages();
 
             services.AddDefaultIdentity<ApplicationUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddIdentityServer().AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+            services.AddIdentityServer()
+                .AddInMemoryIdentityResources(Config.Ids)
+                .AddInMemoryApiResources(Config.Apis)
+                .AddInMemoryClients(Config.Clients)
+                .AddTestUsers(TestUsers.Users)
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+//            builder.AddDeveloperSigningCredential();
+
+//            services.AddIdentityServer().AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
             services.AddAuthentication().AddIdentityServerJwt();
 
             services.AddControllers();
-            services.AddRazorPages();
+//            services.AddRazorPages();
 
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
         }
@@ -54,10 +71,9 @@ namespace Makarevich.Habr.Identity4 {
             app.UseAuthorization();
             app.UseIdentityServer();
 
-            app.UseEndpoints(endpoints => {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            app.UseCors();
 
             app.UseSpa(spa => {
                 spa.Options.SourcePath = "ClientApp";
