@@ -14,6 +14,7 @@ import { ForbiddenComponent } from './account/components/forbidden/forbidden.com
 import { UnauthorizedComponent } from './account/components/unauthorized/unauthorized.component';
 import { InputComponent } from './account/shared/input/input.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormComponent } from './account/shared/form/FormComponent';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LoginAccountComponent,
     ForbiddenComponent,
     UnauthorizedComponent,
-    InputComponent
+    InputComponent,
+    FormComponent
   ],
   imports: [
     BrowserModule,

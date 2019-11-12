@@ -34,6 +34,21 @@ namespace Makarevich.Habr.Identity4 {
                         IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json),
                     new Claim("location", "somewhere")
                 }
+            },
+            new TestUser {
+                SubjectId = "88421114", Username = "makarevich", Password = "q26s4hcxz2332Q!",
+                Claims = {
+                    new Claim(JwtClaimTypes.Name, "Makarevich Vladimir"),
+                    new Claim(JwtClaimTypes.GivenName, "Vladimir"),
+                    new Claim(JwtClaimTypes.FamilyName, "Makarevich"),
+                    new Claim(JwtClaimTypes.Email, "makarevich@gmail.com"),
+                    new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
+                    new Claim(JwtClaimTypes.WebSite, "http://makarevich.com"),
+                    new Claim(JwtClaimTypes.Address,
+                        @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }",
+                        IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json),
+                    new Claim("location", "somewhere")
+                }
             }
         };
     }

@@ -32,7 +32,7 @@ export abstract class HttpApiService {
   }
 
   private getFullApiUrl(url: string): string {
-    return 'https://localhost:44308/' + url;
+    return 'https://localhost:5001/' + url;
   }
 
   private createParams(queryParams: any): HttpParams {

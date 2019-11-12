@@ -13,6 +13,7 @@ using Makarevich.Habr.Identity4.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Makarevich.Habr.Identity4.Controllers {
@@ -30,12 +31,14 @@ namespace Makarevich.Habr.Identity4.Controllers {
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
+            SignInManager<ApplicationUser> signInManager,
             TestUserStore users = null
         ) {
             // if the TestUserStore is not in DI, then we'll just use the global users collection
@@ -46,6 +49,7 @@ namespace Makarevich.Habr.Identity4.Controllers {
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
+            _signInManager = signInManager;
         }
 
         /// <summary>
@@ -53,7 +57,13 @@ namespace Makarevich.Habr.Identity4.Controllers {
         /// </summary>
         [HttpPost("login")]
 //        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromBody]LoginModel model) {
+        public async Task<IActionResult> Login(LoginModel model) {
+            //            model.UserName = "alice";
+            //            model.Password = "alice";
+            //            model.Email = "alice@gmail.com";
+            model.UserName = "makarevich";
+            model.Password = "q26s4hcxz2332Q!";
+            model.Email = "makarevich@gmail.com";
             // check if we are in the context of an authorization request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 //
@@ -87,30 +97,22 @@ namespace Makarevich.Habr.Identity4.Controllers {
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.SubjectId, user.Username,
                         clientId: context?.ClientId));
 
-//                    // only set explicit expiration here if user chooses "remember me". 
-//                    // otherwise we rely upon expiration configured in cookie middleware.
-//                    AuthenticationProperties props = null;
-//                    if (AccountOptions.AllowRememberLogin && model.RememberLogin) {
-//                        props = new AuthenticationProperties {
-//                            IsPersistent = true,
-//                            ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
-//                        };
-//                    }
-//
-//                    // issue authentication cookie with subject ID and username
-//                    await HttpContext.SignInAsync(user.SubjectId, user.Username, props);
-//
-//                    if (context != null) {
-//                        if (await _clientStore.IsPkceClientAsync(context.ClientId)) {
-//                            // if the client is PKCE then we assume it's native, so this change in how to
-//                            // return the response is for better UX for the end user.
-//                            //return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
-//                            return Redirect(model.ReturnUrl);
-//                        }
-//
-//                        // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-//                        return Redirect(model.ReturnUrl);
-//                    }
+                    // only set explicit expiration here if user chooses "remember me".
+                    // otherwise we rely upon expiration configured in cookie middleware.
+                    AuthenticationProperties props = null;
+                    props = new AuthenticationProperties {
+                        IsPersistent = true,
+                        ExpiresUtc = DateTimeOffset.UtcNow.Add(new TimeSpan(10, 10, 10, 10))
+                    };
+
+                    // issue authentication cookie with subject ID and username
+                    await HttpContext.SignInAsync(user.SubjectId, user.Username, props);
+                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, lockoutOnFailure: false);
+
+                    if (context != null) {
+                        // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                        return Redirect(model.ReturnUrl);
+                    }
 
                     // request for a local page
                     if (Url.IsLocalUrl(model.ReturnUrl)) {

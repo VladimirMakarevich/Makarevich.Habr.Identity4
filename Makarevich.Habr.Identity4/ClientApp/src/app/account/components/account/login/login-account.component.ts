@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SignInSandbox } from './SignInSandbox';
 import { SignInForm } from './SignInForm';
 import { Router } from '@angular/router';
+import { FormComponent } from '../../../shared/form/FormComponent';
 
 @Component({
   selector: 'app-login',
@@ -13,10 +14,23 @@ export class LoginAccountComponent implements OnInit, OnDestroy {
   public errorMessage: string;
   public signInForm: SignInForm;
 
+  @ViewChild(FormComponent, { static: true })
+  public form: FormComponent;
+
+  public get actionLogin(): string {
+    return '/api/account/login';
+  }
+
   public constructor(
     public sandbox: SignInSandbox,
-    public router: Router
+    public router: Router,
+    private elementRef: ElementRef
   ) {
+  }
+
+  public htmlSubmit() {
+    debugger;
+    this.form.htmlSubmit();
   }
 
   public ngOnInit(): void {

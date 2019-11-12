@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User, UserManager, WebStorageStateStore } from 'oidc-client';
+import { User, UserManager, UserManagerSettings, WebStorageStateStore } from 'oidc-client';
 import { BehaviorSubject, concat, from, Observable } from 'rxjs';
 import { filter, map, mergeMap, take, tap } from 'rxjs/operators';
 import { ApplicationPaths, ApplicationName } from './api-authorization.constants';
@@ -45,10 +45,12 @@ export class AuthorizeService {
   private userSubject: BehaviorSubject<IUser | null> = new BehaviorSubject(null);
 
   public isAuthenticated(): Observable<boolean> {
+    debugger;
     return this.getUser().pipe(map(u => !!u));
   }
 
   public getUser(): Observable<IUser | null> {
+    debugger;
     return concat(
       this.userSubject.pipe(take(1), filter(u => !!u)),
       this.getUserFromStorage().pipe(filter(u => !!u), tap(u => this.userSubject.next(u))),
@@ -56,6 +58,7 @@ export class AuthorizeService {
   }
 
   public getAccessToken(): Observable<string> {
+    debugger;
     return from(this.ensureUserManagerInitialized())
       .pipe(mergeMap(() => from(this.userManager.getUser())),
         map(user => user && user.access_token));
@@ -70,6 +73,7 @@ export class AuthorizeService {
   // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
   //    redirect flow.
   public async signIn(state: any): Promise<IAuthenticationResult> {
+    debugger;
     await this.ensureUserManagerInitialized();
     let user: User = null;
     try {
@@ -109,6 +113,7 @@ export class AuthorizeService {
 
   public async completeSignIn(url: string): Promise<IAuthenticationResult> {
     try {
+      debugger;
       await this.ensureUserManagerInitialized();
       const user = await this.userManager.signinCallback(url);
       this.userSubject.next(user && user.profile);
@@ -121,6 +126,7 @@ export class AuthorizeService {
 
   public async signOut(state: any): Promise<IAuthenticationResult> {
     try {
+      debugger;
       if (this.popUpDisabled) {
         throw new Error('Popup disabled. Change \'authorize.service.ts:AuthorizeService.popupDisabled\' to false to enable it.');
       }
@@ -142,6 +148,7 @@ export class AuthorizeService {
   }
 
   public async completeSignOut(url: string): Promise<IAuthenticationResult> {
+    debugger;
     await this.ensureUserManagerInitialized();
     try {
       const state = await this.userManager.signoutCallback(url);
@@ -176,14 +183,30 @@ export class AuthorizeService {
 
     const response = await fetch(ApplicationPaths.ApiAuthorizationClientConfigurationUrl);
     if (!response.ok) {
-      throw new Error(`Could not load settings for '${ApplicationName}'`);
+      throw new Error(`Could not load settings for '{ApplicationName}'`);
     }
-
+    // debugger;
+    // const settingsResponse: any = await response.json();
+    //
+    // // const auth = this.configService.auth;
+    // debugger;
+    // const settings: UserManagerSettings = {
+    //   authority: settingsResponse.authority,
+    //   client_id: settingsResponse.client_id,
+    //   redirect_uri: settingsResponse.redirect_uri,
+    //   scope: settingsResponse.scope,
+    //   response_type: settingsResponse.response_type,
+    //   post_logout_redirect_uri: settingsResponse.post_logout_redirect_uri,
+    //   silent_redirect_uri: settingsResponse.redirect_uri,
+    //   automaticSilentRenew: true,
+    //   includeIdTokenInSilentRenew: true,
+    // };
     const settings: any = await response.json();
     settings.automaticSilentRenew = true;
     settings.includeIdTokenInSilentRenew = true;
-    this.userManager = new UserManager(settings);
 
+    this.userManager = new UserManager(settings);
+    debugger;
     this.userManager.events.addUserSignedOut(async () => {
       await this.userManager.removeUser();
       this.userSubject.next(null);
