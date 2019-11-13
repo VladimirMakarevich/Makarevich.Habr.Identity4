@@ -31,13 +31,13 @@ export class SignInForm extends FormContext<LoginModel> {
     return this.getControl('returnUrl');
   }
 
-  public static createForm(model: LoginModel)
+  public static createForm(model: LoginModel, returnUrl: string)
     : SignInForm {
     const form = new FormGroup({
       password: new FormControl(model.password, [Validators.required, Validators.maxLength(255)]),
       email: new FormControl(model.email, [Validators.required, Validators.maxLength(255)]),
       userName: new FormControl(model.userName, [Validators.required, Validators.maxLength(255)]),
-      returnUrl: new FormControl(model.returnUrl),
+      returnUrl: new FormControl(returnUrl),
       rememberMe: new FormControl(model.rememberMe)
     }, {updateOn: 'blur'});
 
@@ -46,7 +46,7 @@ export class SignInForm extends FormContext<LoginModel> {
 
   public getFormData(): LoginModel {
     this.form.enable();
-    return this.form.value
+    return this.form.value;
   }
 
 }

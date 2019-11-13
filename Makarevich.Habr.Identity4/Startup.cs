@@ -62,7 +62,7 @@ namespace Makarevich.Habr.Identity4
             services.AddAuthentication().AddIdentityServerJwt();
 
             services.AddControllers();
-//            services.AddRazorPages();
+//           services.AddRazorPages();
 
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
         }

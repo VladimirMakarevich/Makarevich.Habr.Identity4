@@ -3,71 +3,85 @@
 </h1>
 
 
-<!--<div>-->
-<!--<app-input-->
-<!--type="text"-->
-<!--[control]="signInForm.email"-->
-<!--placeholder="Email"-->
-<!--&gt;-->
-<!--</app-input>-->
-<!--<app-input-->
-<!--type="text"-->
-<!--[control]="signInForm.userName"-->
-<!--placeholder="userName">-->
-<!--</app-input>-->
-<!--<app-input-->
-<!--type="password"-->
-<!--[control]="signInForm.password"-->
-<!--placeholder="Password"-->
-<!--&gt;-->
-<!--</app-input>-->
-<!--<app-input-->
-<!--type="checkbox"-->
-<!--[control]="signInForm.rememberMe"-->
-<!--placeholder="rememberMe"-->
-<!--&gt;-->
-<!--</app-input>-->
-<!--<p>-->
-<!--Remember?-->
-<!--</p>-->
-<!--</div>-->
-
-<form appForm [formGroup]="signInForm.form" [action]="actionLogin" method="POST">
-  <ng-container title>Авторизация</ng-container>
+<div>
   <app-input
-    name="username"
-    [control]="signInForm.username"
+    type="text"
+    [control]="signInForm.email"
+    placeholder="Email"
   >
-    Логин:
   </app-input>
-
   <app-input
-    name="password"
-    [control]="signInForm.password"
+    type="text"
+    [control]="signInForm.userName"
+    placeholder="userName">
+  </app-input>
+  <app-input
     type="password"
+    [control]="signInForm.password"
+    placeholder="Password"
   >
-    Пароль:
   </app-input>
+  <app-input
+    type="checkbox"
+    [control]="signInForm.rememberMe"
+    placeholder="rememberMe"
+  >
+  </app-input>
+  <p>
+    Remember?
+  </p>
+</div>
 
-  <button type="submit" (click)="htmlSubmit()">
-    Войти
-  </button>
-</form>
+
+<button
+  (click)="handleSignIn($event)">
+  Sign In
+</button>
+/
+<button
+  (click)="handleSignUp()">
+  Sign Up
+</button>
+
+<br><br>
+
+<button
+  (submit)="handleGoBack()">
+  Go Back
+</button>
 
 
-<!--<button-->
-  <!--(click)="handleSignIn($event)">-->
-  <!--Sign In-->
-<!--</button>-->
-<!--/-->
-<!--<button-->
-  <!--(click)="handleSignUp()">-->
-  <!--Sign Up-->
-<!--</button>-->
+<hr>
 
-<!--<br><br>-->
 
-<!--<button-->
-  <!--(submit)="handleGoBack()">-->
-  <!--Go Back-->
-<!--</button>-->
+<!--<form appForm [formGroup]="signInForm.form" [action]="actionLogin" method="POST">-->
+  <!--<ng-container>Авторизация</ng-container>-->
+  <!--<app-input-->
+    <!--name="username"-->
+    <!--[control]="signInForm.userName"-->
+  <!--&gt;-->
+    <!--Логин:-->
+  <!--</app-input>-->
+
+  <!--<app-input-->
+    <!--name="password"-->
+    <!--[control]="signInForm.password"-->
+  <!--&gt;-->
+    <!--Пароль:-->
+  <!--</app-input>-->
+
+  <!--<app-input-->
+    <!--name="returnUrl"-->
+    <!--[control]="signInForm.returnUrl"-->
+  <!--&gt;-->
+    <!--Ссылка:-->
+  <!--</app-input>-->
+
+  <!--<button type="submit" (click)="htmlCompSubmit()">-->
+    <!--Войти-->
+  <!--</button>-->
+<!--</form>-->
+
+
+<p>Return Value:</p>
+<p>{{returnValue}}</p>

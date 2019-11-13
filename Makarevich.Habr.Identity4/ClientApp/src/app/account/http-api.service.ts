@@ -18,7 +18,8 @@ export abstract class HttpApiService {
   }
 
   protected post<T, K>(url: string, request: T): Observable<K> {
-    return this.http.post(this.getFullApiUrl(url), request) as any;
+    debugger;
+    return this.http.post<K>(this.getFullApiUrl(url), request) as any;
   }
 
   protected put<T, K>(url: string, request: T): Observable<K> {
@@ -32,7 +33,7 @@ export abstract class HttpApiService {
   }
 
   private getFullApiUrl(url: string): string {
-    return 'https://localhost:5001/' + url;
+    return 'https://localhost:44308/' + url;
   }
 
   private createParams(queryParams: any): HttpParams {

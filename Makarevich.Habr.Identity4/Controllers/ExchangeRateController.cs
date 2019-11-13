@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Makarevich.Habr.Identity4.Controllers {
     [ApiController]
     [Authorize]
-    public class ExchangeRateController {
+    public class ExchangeRateController : ControllerBase {
         private static readonly string[] Currencies = new[] {
             "EUR", "USD", "BGN", "AUD", "CNY", "TWD", "NZD", "TND", "UAH", "UYU", "MAD"
         };

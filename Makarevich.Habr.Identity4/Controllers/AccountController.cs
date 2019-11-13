@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Makarevich.Habr.Identity4.Controllers {
     /// <summary>
@@ -25,6 +26,7 @@ namespace Makarevich.Habr.Identity4.Controllers {
     [Produces("application/json")]
     [Route("api/account/")]
     [AllowAnonymous]
+    [ApiController]
     public class AccountController : ControllerBase {
         private readonly TestUserStore _users;
         private readonly IIdentityServerInteractionService _interaction;
@@ -55,15 +57,21 @@ namespace Makarevich.Habr.Identity4.Controllers {
         /// <summary>
         /// Handle postback from username/password login
         /// </summary>
-        [HttpPost("login")]
+        [HttpPost]
+        [Route("login")]
 //        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel model) {
+        public async Task<IActionResult> Login(object model1) {
+            var type = typeof(LoginModel);
+            var strr = model1.ToString();
+            var model = JsonConvert.DeserializeObject(strr, type) as LoginModel;
             //            model.UserName = "alice";
             //            model.Password = "alice";
             //            model.Email = "alice@gmail.com";
             model.UserName = "makarevich";
             model.Password = "q26s4hcxz2332Q!";
             model.Email = "makarevich@gmail.com";
+//            model.ReturnUrl = "https://localhost:44308/authentication/login-callback";
+//            model.ReturnUrl = "https:\\localhost:5001/connect/authorize?client_id";
             // check if we are in the context of an authorization request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 //
@@ -107,23 +115,25 @@ namespace Makarevich.Habr.Identity4.Controllers {
 
                     // issue authentication cookie with subject ID and username
                     await HttpContext.SignInAsync(user.SubjectId, user.Username, props);
-                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, lockoutOnFailure: false);
+                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, true,
+                        lockoutOnFailure: false);
 
                     if (context != null) {
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                        return Redirect(model.ReturnUrl);
+                        return Ok(model.ReturnUrl);
                     }
 
                     // request for a local page
                     if (Url.IsLocalUrl(model.ReturnUrl)) {
-                        return Redirect(model.ReturnUrl);
+                        return Ok(model.ReturnUrl);
                     }
                     else if (string.IsNullOrEmpty(model.ReturnUrl)) {
-                        return Redirect("~/");
+                        return Ok();
                     }
                     else {
                         // user might have clicked on a malicious link - should be logged
-                        throw new Exception("invalid return URL");
+                        // throw new Exception("invalid return URL");
+                        return Ok(model.ReturnUrl);
                     }
                 }
 
@@ -146,6 +156,5 @@ namespace Makarevich.Habr.Identity4.Controllers {
         public async Task<IActionResult> Logout(dynamic model) {
             return Ok(model);
         }
-
     }
 }

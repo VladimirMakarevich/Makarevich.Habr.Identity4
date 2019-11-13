@@ -16,6 +16,7 @@ export class AccountService extends HttpApiService {
   }
 
   public login = (loginModel: LoginModel): Observable<any> => {
+    debugger;
     return this.post<LoginModel, any>(
       'api/account/login', loginModel);
   };

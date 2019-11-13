@@ -1,8 +1,9 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SignInSandbox } from './SignInSandbox';
 import { SignInForm } from './SignInForm';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormComponent } from '../../../shared/form/FormComponent';
+import { ApplicationPaths, ReturnUrlType } from '../../../../api-authorization/api-authorization.constants';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,7 @@ import { FormComponent } from '../../../shared/form/FormComponent';
   providers: [SignInSandbox]
 })
 export class LoginAccountComponent implements OnInit, OnDestroy {
-  public errorMessage: string;
+  public returnValue: string;
   public signInForm: SignInForm;
 
   @ViewChild(FormComponent, { static: true })
@@ -24,17 +25,19 @@ export class LoginAccountComponent implements OnInit, OnDestroy {
   public constructor(
     public sandbox: SignInSandbox,
     public router: Router,
+    private activatedRoute: ActivatedRoute,
     private elementRef: ElementRef
   ) {
   }
 
-  public htmlSubmit() {
+  public htmlCompSubmit() {
     debugger;
     this.form.htmlSubmit();
   }
 
   public ngOnInit(): void {
-    this.signInForm = this.sandbox.createForm();
+    this.returnValue = this.getReturnUrl();
+    this.signInForm = this.sandbox.createForm(this.returnValue);
   }
 
   public ngOnDestroy(): void {
@@ -47,7 +50,7 @@ export class LoginAccountComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.sandbox.handleSignIn(this.signInForm);
+    this.sandbox.handleSignIn(this.signInForm, this.returnValue);
   }
 
   public handleSignUp(): void {
@@ -61,4 +64,24 @@ export class LoginAccountComponent implements OnInit, OnDestroy {
   public get isValidSignInForm(): boolean {
     return this.signInForm.validate();
   }
+
+  private getReturnUrl(state?: INavigationState): string {
+    const fromQuery = (this.activatedRoute.snapshot.queryParams as INavigationState).returnUrl;
+    // If the url is comming from the query string, check that is either
+    // a relative url or an absolute url
+    if (fromQuery &&
+      !(fromQuery.startsWith(`${window.location.origin}/`) ||
+        /\/[^\/].*/.test(fromQuery))) {
+      // This is an extra check to prevent open redirects.
+      throw new Error('Invalid return url. The return url needs to have the same origin as the current page.');
+    }
+    return (state && state.returnUrl) ||
+      fromQuery ||
+      ApplicationPaths.DefaultLoginRedirectPath;
+  }
 }
+
+interface INavigationState {
+  [ReturnUrlType]: string;
+}
+

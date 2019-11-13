@@ -25,19 +25,24 @@ export class LoginComponent implements OnInit {
     const action = this.activatedRoute.snapshot.url[1];
     switch (action.path) {
       case LoginActions.Login:
+        debugger;
         await this.login(this.getReturnUrl());
         break;
       case LoginActions.LoginCallback:
+        debugger;
         await this.processLoginCallback();
         break;
       case LoginActions.LoginFailed:
+        debugger;
         const message = this.activatedRoute.snapshot.queryParamMap.get(QueryParameterNames.Message);
         this.message.next(message);
         break;
       case LoginActions.Profile:
+        debugger;
         this.redirectToProfile();
         break;
       case LoginActions.Register:
+        debugger;
         this.redirectToRegister();
         break;
       default:

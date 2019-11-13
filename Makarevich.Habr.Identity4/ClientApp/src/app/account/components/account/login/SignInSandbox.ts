@@ -18,23 +18,23 @@ export class SignInSandbox {
   ) {
   }
 
-  public handleSignIn(signForm: SignInForm): void {
+  public handleSignIn = (signForm: SignInForm, returnUrl: string): void => {
     let request = { ...this.loginModel, ...signForm.getFormData() } as LoginModel;
-    request.returnUrl = 'https://localhost:5001/home';
+    request.returnUrl = returnUrl;
     debugger;
     this.subscriptions.push(this.service.login(request)
-      .subscribe((response: any) => {
+      .subscribe((response: string) => {
         debugger;
         console.log(response);
+        const splits = response.split('/');
+        console.log(splits);
         // TODO: MVV: should be change saved response (remove token)
-        this.router.navigate(['/', 'home']);
+        window.location.href = response;
       }, error => {
         console.log(error);
         debugger;
       }));
-    // this.subscriptions.push(this.storage.applicationStorage.getCurrentUser(true)
-    //   .subscribe());
-  }
+  };
 
   public dispose(): void {
     if (this.subscriptions) {
@@ -47,9 +47,9 @@ export class SignInSandbox {
     }
   }
 
-  public createForm(): SignInForm {
+  public createForm(returnUrl: string): SignInForm {
     this.loginModel = new LoginModel();
-    return SignInForm.createForm(this.loginModel);
+    return SignInForm.createForm(this.loginModel, returnUrl);
   }
 
 }
