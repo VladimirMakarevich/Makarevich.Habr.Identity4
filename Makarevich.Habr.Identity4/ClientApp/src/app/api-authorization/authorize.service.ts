@@ -73,6 +73,7 @@ export class AuthorizeService {
   // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
   //    redirect flow.
   public async signIn(state: any): Promise<IAuthenticationResult> {
+    console.log('>>>>>>>>> signIn: ', state);
     debugger;
     await this.ensureUserManagerInitialized();
     let user: User = null;
@@ -112,6 +113,7 @@ export class AuthorizeService {
   }
 
   public async completeSignIn(url: string): Promise<IAuthenticationResult> {
+    console.log('>>>>>>>>> completeSignIn: ', url);
     try {
       debugger;
       await this.ensureUserManagerInitialized();
@@ -125,6 +127,7 @@ export class AuthorizeService {
   }
 
   public async signOut(state: any): Promise<IAuthenticationResult> {
+    console.log('>>>>>>>>> signOut: ', state);
     try {
       debugger;
       if (this.popUpDisabled) {
@@ -148,6 +151,7 @@ export class AuthorizeService {
   }
 
   public async completeSignOut(url: string): Promise<IAuthenticationResult> {
+    console.log('>>>>>>>>> completeSignOut: ', url);
     debugger;
     await this.ensureUserManagerInitialized();
     try {

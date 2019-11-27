@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
 
   async ngOnInit() {
     const action = this.activatedRoute.snapshot.url[1];
+    console.log('>>>>>>>>> LoginComponent: ', action.path);
     switch (action.path) {
       case LoginActions.Login:
         debugger;
@@ -37,10 +38,6 @@ export class LoginComponent implements OnInit {
         const message = this.activatedRoute.snapshot.queryParamMap.get(QueryParameterNames.Message);
         this.message.next(message);
         break;
-      case LoginActions.Profile:
-        debugger;
-        this.redirectToProfile();
-        break;
       case LoginActions.Register:
         debugger;
         this.redirectToRegister();
@@ -52,6 +49,7 @@ export class LoginComponent implements OnInit {
 
 
   private async login(returnUrl: string): Promise<void> {
+    console.log('>>>>>>>>> login: ', returnUrl);
     const state: INavigationState = { returnUrl };
     const result = await this.authorizeService.signIn(state);
     this.message.next(undefined);
@@ -72,6 +70,7 @@ export class LoginComponent implements OnInit {
   }
 
   private async processLoginCallback(): Promise<void> {
+    console.log('>>>>>>>>> processLoginCallback: ');
     const url = window.location.href;
     const result = await this.authorizeService.completeSignIn(url);
     switch (result.status) {

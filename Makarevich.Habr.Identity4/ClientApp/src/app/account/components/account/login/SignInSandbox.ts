@@ -21,10 +21,8 @@ export class SignInSandbox {
   public handleSignIn = (signForm: SignInForm, returnUrl: string): void => {
     let request = { ...this.loginModel, ...signForm.getFormData() } as LoginModel;
     request.returnUrl = returnUrl;
-    debugger;
     this.subscriptions.push(this.service.login(request)
       .subscribe((response: string) => {
-        debugger;
         console.log(response);
         const splits = response.split('/');
         console.log(splits);
@@ -32,7 +30,6 @@ export class SignInSandbox {
         window.location.href = response;
       }, error => {
         console.log(error);
-        debugger;
       }));
   };
 

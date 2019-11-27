@@ -23,6 +23,7 @@ export class LogoutComponent implements OnInit {
 
   async ngOnInit() {
     const action = this.activatedRoute.snapshot.url[1];
+    console.log('>>>>>>>>> LogoutComponent: ', action.path);
     switch (action.path) {
       case LogoutActions.Logout:
         if (!!window.history.state.local) {

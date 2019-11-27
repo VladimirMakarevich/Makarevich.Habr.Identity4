@@ -17,7 +17,6 @@ export const LoginActions = {
   Login: 'login',
   LoginCallback: 'login-callback',
   LoginFailed: 'login-failed',
-  Profile: 'profile',
   Register: 'register'
 };
 
@@ -29,7 +28,6 @@ let applicationPaths: ApplicationPathsType = {
   LoginFailed: `authentication/${LoginActions.LoginFailed}`,
   LoginCallback: `authentication/${LoginActions.LoginCallback}`,
   Register: `authentication/${LoginActions.Register}`,
-  Profile: `authentication/${LoginActions.Profile}`,
   LogOut: `authentication/${LogoutActions.Logout}`,
   LoggedOut: `authentication/${LogoutActions.LoggedOut}`,
   LogOutCallback: `authentication/${LogoutActions.LogoutCallback}`,
@@ -50,7 +48,6 @@ applicationPaths = {
   LoginPathComponents: applicationPaths.Login.split('/'),
   LoginFailedPathComponents: applicationPaths.LoginFailed.split('/'),
   RegisterPathComponents: applicationPaths.Register.split('/'),
-  ProfilePathComponents: applicationPaths.Profile.split('/'),
   LogOutPathComponents: applicationPaths.LogOut.split('/'),
   LoggedOutPathComponents: applicationPaths.LoggedOut.split('/'),
   LogOutCallbackPathComponents: applicationPaths.LogOutCallback.split('/')
@@ -63,7 +60,6 @@ interface ApplicationPathsType {
   readonly LoginFailed: string;
   readonly LoginCallback: string;
   readonly Register: string;
-  readonly Profile: string;
   readonly LogOut: string;
   readonly LoggedOut: string;
   readonly LogOutCallback: string;
